@@ -3,7 +3,9 @@ package com.example.demo.controllers;
 import com.example.demo.models.Book;
 import com.example.demo.services.AuthorService;
 import com.example.demo.services.BookService;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +27,13 @@ public class BookRestController {
     public List<Book> getAllBooks() {
         return bookService.findAll();
     }
+
+    @GetMapping(value = "/xml", produces = "application/xml")
+    @ResponseBody
+    public List<Book> getBooksAsXml() {
+        return bookService.findAll();
+    }
+
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public Book addBook(@RequestBody Book book) {
