@@ -2,6 +2,8 @@ package com.example.demo.services;
 
 import com.example.demo.models.Author;
 import com.example.demo.models.AuthorRepository;
+import com.example.demo.models.Book;
+import com.example.demo.models.BookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,9 +12,11 @@ import java.util.Optional;
 @Service
 public class AuthorService {
     private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
 
-    public AuthorService(AuthorRepository authorRepository) {
+    public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository) {
         this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
     }
 
     public List<Author> findAll(){
@@ -26,4 +30,12 @@ public class AuthorService {
     public Author save(Author author){
         return authorRepository.save(author);
     }
+
+    public void deleteById(Long id){
+        List<Book> books = bookRepository.findByAuthor_Id(id);
+        for (Book book : books) {
+            bookRepository.deleteById(book.getId());
+        }
+        authorRepository.deleteById(id);
+    };
 }

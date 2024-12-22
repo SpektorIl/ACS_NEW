@@ -1,16 +1,21 @@
 package com.example.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @SuppressWarnings("unused")
 @Table(name = "author")
+@XmlRootElement
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,9 +23,10 @@ public class Author {
 
     private String name;
 
-    private LocalDate birth_date;
+    private String birth_date;
 
     private String country;
+
 
     public Long getId() {
         return id;
@@ -38,11 +44,11 @@ public class Author {
         this.name = name;
     }
 
-    public LocalDate getBirth_date() {
+    public String getBirth_date() {
         return birth_date;
     }
 
-    public void setBirth_date(LocalDate birth_date) {
+    public void setBirth_date(String birth_date) {
         this.birth_date = birth_date;
     }
 
@@ -53,5 +59,6 @@ public class Author {
     public void setCountry(String country) {
         this.country = country;
     }
+
 }
 
