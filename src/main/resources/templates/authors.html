@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Authors</title>
+</head>
+<body>
+<h1>Authors</h1>
+<ul>
+    <li th:each="author : ${authors}">
+        <span th:text="${author.name}"></span>
+        (<span th:text="${author.country}"></span>)
+    </li>
+</ul>
+<form method="post" action="/authors">
+    <input type="text" name="name" placeholder="Name" required/>
+    <input type="date" name="birth_date" required/>
+    <input type="text" name="country" placeholder="Country" required/>
+    <button type="submit">Add Author</button>
+</form>
+</body>
+</html>

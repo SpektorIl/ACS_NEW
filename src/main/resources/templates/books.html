@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Books</title>
+</head>
+<body>
+<h1>Books</h1>
+<ul>
+    <li th:each="book : ${books}">
+        <span th:text="${book.title}"></span> by <span th:text="${book.author.name}"></span>
+    </li>
+</ul>
+<form method="post" action="/books">
+    <input type="text" name="title" placeholder="Title" required/>
+    <input type="date" name="publication_date" required/>
+    <input type="text" name="genre" placeholder="Classic" required/>
+    <select name="author" required>
+        <option value="" disabled selected>Select an Author</option>
+        <option th:each="author : ${authors}"
+                th:value="${author.id}"
+                th:text="${author.name}">
+        </option>
+    </select>
+
+    <button type="submit">Add Book</button>
+</form>
+</body>
+</html>
