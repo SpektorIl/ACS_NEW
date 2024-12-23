@@ -1,11 +1,8 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.restcontrollers;
 
 import com.example.demo.models.Book;
 import com.example.demo.services.AuthorService;
 import com.example.demo.services.BookService;
-import jakarta.annotation.Resource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +13,14 @@ import java.util.Optional;
 @RequestMapping("/api/books")
 public class BookRestController {
 
-    @Autowired
-    private BookService bookService;
+    private final BookService bookService;
 
-    @Autowired
-    private AuthorService authorService;
+    private final AuthorService authorService;
+
+    public BookRestController(BookService bookService, AuthorService authorService) {
+        this.bookService = bookService;
+        this.authorService = authorService;
+    }
 
     // CRUD for books
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})

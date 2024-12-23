@@ -1,22 +1,15 @@
 package com.example.demo.models;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @SuppressWarnings("unused")
 @Table(name = "author")
-@XmlRootElement
+@XmlRootElement()
 public class Author {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

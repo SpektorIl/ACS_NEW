@@ -1,10 +1,7 @@
 package com.example.demo.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @SuppressWarnings("unused")
