@@ -31,6 +31,7 @@
                             <th>Name</th>
                             <th>Birth Date</th>
                             <th>Country</th>
+                            <th>Books</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -41,6 +42,9 @@
                                 <td><xsl:value-of select="name"/></td>
                                 <td><xsl:value-of select="birth_date"/></td>
                                 <td><xsl:value-of select="country"/></td>
+                                <td>
+                                    <a href="/api/authors/{id}/books">View Books</a>
+                                </td>
                             </tr>
                         </xsl:for-each>
                     </tbody>

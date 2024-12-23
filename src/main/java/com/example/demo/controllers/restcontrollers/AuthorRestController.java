@@ -1,12 +1,11 @@
 package com.example.demo.controllers.restcontrollers;
 
 import com.example.demo.models.Author;
+import com.example.demo.models.Book;
 import com.example.demo.models.wrappers.AuthorsWrapper;
 import com.example.demo.services.AuthorService;
-import com.example.demo.services.BookService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Marshaller;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +20,9 @@ public class AuthorRestController {
 
     private final AuthorService authorService;
 
-    private final BookService bookService;
 
-    public AuthorRestController(AuthorService authorService, BookService bookService) {
+    public AuthorRestController(AuthorService authorService) {
         this.authorService = authorService;
-        this.bookService = bookService;
     }
 
     //CRUD for authors
@@ -55,6 +52,11 @@ public class AuthorRestController {
         authorService.deleteById(authorId);
     }
 
+    @GetMapping(value ="/{authorId}/books",produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public List<Book> getBooksByAuthor_Id(@PathVariable Long authorId) {
+        return authorService.findBooksByAuthor_Id(authorId);
+    }
+
     //============================XML-Answer-Controllers==========================================
 
     @GetMapping(value = "/xml", produces = MediaType.APPLICATION_XML_VALUE)
@@ -70,23 +72,24 @@ public class AuthorRestController {
             // Преобразуем в XML
             JAXBContext jaxbContext = JAXBContext.newInstance(AuthorsWrapper.class);
             Marshaller marshaller = jaxbContext.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,false);
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
 
             StringWriter xmlWriter = new StringWriter();
             marshaller.marshal(wrapper, xmlWriter);
 
             String xml = xmlWriter.toString();
-            String xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<?xml-stylesheet type=\"text/xsl\" href=\"/authors.xsl\"?>\n";
+            String xmlHeader =  """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <?xml-stylesheet type="text/xsl" href="/authors.xsl"?>
+                    """;
             // Добавляем XSL ссылку
             String xmlWithXsl = xmlHeader + xml;
 
 
             return ResponseEntity.ok(xmlWithXsl);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Error generating XML");
+            throw new RuntimeException(e);
         }
     }
 

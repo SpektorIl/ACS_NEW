@@ -1,11 +1,16 @@
 package com.example.demo.controllers.restcontrollers;
 
 import com.example.demo.models.Book;
-import com.example.demo.services.AuthorService;
+import com.example.demo.models.wrappers.BooksWrapper;
 import com.example.demo.services.BookService;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,11 +20,9 @@ public class BookRestController {
 
     private final BookService bookService;
 
-    private final AuthorService authorService;
 
-    public BookRestController(BookService bookService, AuthorService authorService) {
+    public BookRestController(BookService bookService) {
         this.bookService = bookService;
-        this.authorService = authorService;
     }
 
     // CRUD for books
@@ -27,13 +30,6 @@ public class BookRestController {
     public List<Book> getAllBooks() {
         return bookService.findAll();
     }
-
-    @GetMapping(value = "/xml", produces = "application/xml")
-    @ResponseBody
-    public List<Book> getBooksAsXml() {
-        return bookService.findAll();
-    }
-
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public Book addBook(@RequestBody Book book) {
@@ -54,6 +50,39 @@ public class BookRestController {
     @DeleteMapping("/{bookId}")
     public void deleteBook(@PathVariable Long bookId) {
         bookService.deleteById(bookId);
+    }
+
+
+    //=================XML-Answer-Controllers=================
+
+    @GetMapping(value = "/xml", produces = {MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<String> getBooksAsXmlWithXsl() {
+        try{
+            List<Book> books = bookService.findAll();
+
+            BooksWrapper wrapper = new BooksWrapper(books);
+
+            JAXBContext jaxbContext = JAXBContext.newInstance(BooksWrapper.class);
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+
+            StringWriter xmlWriter = new StringWriter();
+            marshaller.marshal(wrapper, xmlWriter);
+
+            String xml = xmlWriter.toString();
+            String xmlHeader = """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <?xml-stylesheet type="text/xsl" href="/books.xsl"?>
+                    """;
+
+            String xmlWithXls = xmlHeader + xml;
+
+            return ResponseEntity.ok(xmlWithXls);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
 

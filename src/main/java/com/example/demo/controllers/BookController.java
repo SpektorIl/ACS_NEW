@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/books")
 public class BookController {
+
     private final BookService bookService;
     private final AuthorService authorService;
 
@@ -25,9 +26,11 @@ public class BookController {
         model.addAttribute("authors", authorService.findAll());
         return "books";
     }
+
     @PostMapping
     public String saveBook(@ModelAttribute Book book) {
         bookService.save(book);
         return "redirect:/books";
     }
+
 }

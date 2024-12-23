@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 public class AuthorService {
+
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
+
 
     public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository) {
         this.authorRepository = authorRepository;
@@ -38,4 +41,9 @@ public class AuthorService {
         }
         authorRepository.deleteById(id);
     };
+
+    public List<Book> findBooksByAuthor_Id(Long authorId) {
+        return bookRepository.findByAuthor_Id(authorId);
+    }
+
 }

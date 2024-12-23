@@ -9,7 +9,9 @@ import java.util.Optional;
 
 @Service
 public class BookService {
+
     private final BookRepository bookRepository;
+
 
     public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
@@ -30,4 +32,5 @@ public class BookService {
     public void deleteById(Long id){
         bookRepository.deleteById(id);
     }
+
 }

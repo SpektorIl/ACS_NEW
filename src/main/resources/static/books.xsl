@@ -10,6 +10,7 @@
                         <th>Title</th>
                         <th>Publication Date</th>
                         <th>Genre</th>
+                        <th>Author</th>
                     </tr>
                     <xsl:for-each select="books/book">
                         <tr>
@@ -17,6 +18,11 @@
                             <td><xsl:value-of select="title"/></td>
                             <td><xsl:value-of select="publication_date"/></td>
                             <td><xsl:value-of select="genre"/></td>
+                            <td>
+                                <a href="/api/authors/{author/id}">
+                                    <xsl:value-of select="author/name"/>
+                                </a>
+                            </td>
                         </tr>
                     </xsl:for-each>
                 </table>
