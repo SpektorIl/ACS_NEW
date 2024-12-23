@@ -84,5 +84,36 @@ public class BookRestController {
         }
 
     }
+
+    @GetMapping(value = "/{bookId}/xml", produces = {MediaType.APPLICATION_XML_VALUE})
+    public ResponseEntity<String> getBooksByIdAsXmlWithXsl(@PathVariable Long bookId) {
+        try{
+            List<Book> books = bookService.findById(bookId).stream().toList();
+
+            BooksWrapper wrapper = new BooksWrapper(books);
+
+            JAXBContext jaxbContext = JAXBContext.newInstance(BooksWrapper.class);
+            Marshaller marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+
+            StringWriter xmlWriter = new StringWriter();
+            marshaller.marshal(wrapper, xmlWriter);
+
+            String xml = xmlWriter.toString();
+            String xmlHeader = """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <?xml-stylesheet type="text/xsl" href="/books.xsl"?>
+                    """;
+
+            String xmlWithXls = xmlHeader + xml;
+
+            return ResponseEntity.ok(xmlWithXls);
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }
+
 
