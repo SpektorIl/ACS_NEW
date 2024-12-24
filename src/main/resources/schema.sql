@@ -3,7 +3,7 @@ CREATE DATABASE library_management;
 CREATE TABLE Author (
                         id SERIAL PRIMARY KEY,
                         name VARCHAR(100) NOT NULL,
-                        birth_date DATE,
+                        birth_date VARCHAR(150),
                         country VARCHAR(50)
 );
 
@@ -11,7 +11,7 @@ CREATE TABLE Author (
 CREATE TABLE Book (
                       id SERIAL PRIMARY KEY,
                       title VARCHAR(150) NOT NULL,
-                      publication_date DATE,
+                      publication_date VARCHAR(150),
                       genre VARCHAR(50),
                       author_id INT,
                       FOREIGN KEY (author_id) REFERENCES Author(id)
