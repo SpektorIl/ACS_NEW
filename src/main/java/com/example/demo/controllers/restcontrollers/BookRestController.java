@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/api/books")
@@ -53,7 +55,7 @@ public class BookRestController {
     }
 
 
-    //=================XML-Answer-Controllers=================
+    //=================XML-Answer-Controllers==========================
 
     @GetMapping(value = "/xml", produces = {MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<String> getBooksAsXmlWithXsl() {
@@ -82,15 +84,16 @@ public class BookRestController {
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
-
     }
+
 
     @GetMapping(value = "/{bookId}/xml", produces = {MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<String> getBooksByIdAsXmlWithXsl(@PathVariable Long bookId) {
         try{
-            List<Book> books = bookService.findById(bookId).stream().toList();
+            Optional<Book> books = bookService.findById(bookId);
+            BooksWrapper wrapper = new BooksWrapper(books.stream()
+                    .collect(Collectors.toList()));
 
-            BooksWrapper wrapper = new BooksWrapper(books);
 
             JAXBContext jaxbContext = JAXBContext.newInstance(BooksWrapper.class);
             Marshaller marshaller = jaxbContext.createMarshaller();
@@ -107,12 +110,11 @@ public class BookRestController {
                     """;
 
             String xmlWithXls = xmlHeader + xml;
-
             return ResponseEntity.ok(xmlWithXls);
+
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
 

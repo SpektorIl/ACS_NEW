@@ -33,8 +33,6 @@ public class JmsConfig {
         props.put("org.omg.CORBA.ORBInitialPort", "3700");
 
         // Для "внешнего" клиента обычно resourceRef = false
-        factoryBean.setResourceRef(false);
-        factoryBean.setProxyInterface(ConnectionFactory.class);
         factoryBean.setJndiEnvironment(props);
         factoryBean.setLookupOnStartup(false);
         factoryBean.afterPropertiesSet();

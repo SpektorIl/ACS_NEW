@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/authors")
@@ -99,7 +100,7 @@ public class AuthorRestController {
     public ResponseEntity<String> getBooksByAuthorIdAsXmlWithXsl(@PathVariable Long authorId) {
         try {
             // Получаем список авторов
-            List<Book> books = authorService.findBooksByAuthor_Id(authorId).stream().toList();
+            List<Book> books = authorService.findBooksByAuthor_Id(authorId).stream().collect(Collectors.toList());
 
             BooksWrapper wrapper = new BooksWrapper(books);
 
@@ -130,7 +131,7 @@ public class AuthorRestController {
     public ResponseEntity<String> getAuthorsByIdAsXmlWithXsl(@PathVariable Long authorId) {
         try {
             // Получаем список авторов
-            List<Author> authors = authorService.findById(authorId).stream().toList();
+            List<Author> authors = authorService.findById(authorId).stream().collect(Collectors.toList());
 
             // Оборачиваем список авторов в корневой элемент
             AuthorsWrapper wrapper = new AuthorsWrapper();

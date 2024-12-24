@@ -4,6 +4,8 @@ import com.example.demo.models.Author;
 import com.example.demo.models.repositories.AuthorRepository;
 import com.example.demo.models.Book;
 import com.example.demo.models.repositories.BookRepository;
+import com.example.demo.services.jms.ChangeLogMessage;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,11 +17,12 @@ public class AuthorService {
 
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
+    private final JmsTemplate jmsTemplate;
 
-
-    public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository) {
+    public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository, JmsTemplate jmsTemplate) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
+        this.jmsTemplate = jmsTemplate;
     }
 
     public List<Author> findAll(){
@@ -31,7 +34,9 @@ public class AuthorService {
     }
 
     public Author save(Author author){
-        return authorRepository.save(author);
+        Author savedAuthor = authorRepository.save(author);
+        sendChangeLog("CREATE_OR_UPDATE", "Author", savedAuthor.getId(), "Author saved or updated");
+        return savedAuthor;
     }
 
     public void deleteById(Long id){
@@ -46,4 +51,8 @@ public class AuthorService {
         return bookRepository.findByAuthor_Id(authorId);
     }
 
+    private void sendChangeLog(String changeType, String entityClass, Long entityId, String details) {
+        ChangeLogMessage message = new ChangeLogMessage(changeType, entityClass, entityId, details);
+        jmsTemplate.convertAndSend("jms/ChangeLogQueue", message);
+    }
 }
