@@ -1,53 +1,57 @@
 package com.example.demo.services.jms;
 
-import jakarta.jms.ConnectionFactory;
+
+import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
-import org.springframework.jms.connection.CachingConnectionFactory;
+import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jndi.JndiObjectFactoryBean;
+
+import jakarta.jms.ConnectionFactory;
+
+import java.util.Arrays;
 
 
-import javax.naming.NamingException;
-import java.util.Properties;
-
-
-@EnableJms
+/**
+ * Конфигураитор JMS
+ *
+ */
 @Configuration
+@EnableJms
 public class JmsConfig {
 
+    // Настройка встроенного брокера ActiveMQ
     @Bean
-    public ConnectionFactory connectionFactory() throws NamingException {
-        JndiObjectFactoryBean factoryBean = new JndiObjectFactoryBean();
-        factoryBean.setJndiName("jms/ChangeLogConnectionFactory");
-
-        // Задаём свойства для удалённого JNDI
-        Properties props = new Properties();
-        props.put("java.naming.factory.initial", "com.sun.enterprise.naming.SerialInitContextFactory");
-        props.put("java.naming.factory.url.pkgs", "com.sun.enterprise.naming");
-        props.put("java.naming.factory.state", "com.sun.corba.ee.impl.presentation.rmi.JNDIStateFactoryImpl");
-
-        // ВАЖНО: Хост и порт GlassFish
-        props.put("org.omg.CORBA.ORBInitialHost", "localhost");
-        props.put("org.omg.CORBA.ORBInitialPort", "3700");
-
-        // Для "внешнего" клиента обычно resourceRef = false
-        factoryBean.setResourceRef(false);
-        factoryBean.setExpectedType(ConnectionFactory.class);
-        factoryBean.setJndiEnvironment(props);
-        factoryBean.setLookupOnStartup(false);
-        factoryBean.afterPropertiesSet();
-        return (ConnectionFactory) factoryBean.getObject();
+    public BrokerService broker() throws Exception {
+        BrokerService broker = new BrokerService();
+        broker.setBrokerName("embedded");
+        broker.addConnector("vm://embedded");
+        broker.setPersistent(false); // Включить хранение данных только в памяти
+        return broker;
     }
 
     @Bean
-    public CachingConnectionFactory cachingConnectionFactory(ConnectionFactory connectionFactory) {
-        return new CachingConnectionFactory(connectionFactory);
+    public ConnectionFactory connectionFactory() {
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://embedded");
+        connectionFactory.setTrustedPackages(Arrays.asList("com.example.demo.models", "java.util", "java.lang", "java.time"));
+        return connectionFactory;
     }
 
     @Bean
-    public JmsTemplate jmsTemplate(CachingConnectionFactory cachingConnectionFactory) {
-        return new JmsTemplate(cachingConnectionFactory);
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
+        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setConcurrency("1-1"); // Настройка минимального и максимального числа потоков
+        factory.setPubSubDomain(false); // Использование очередей (point-to-point)
+        return factory;
+    }
+
+    @Bean
+    public JmsTemplate jmsTemplate(ConnectionFactory connectionFactory) {
+        JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
+        jmsTemplate.setPubSubDomain(false); // Использование очередей
+        return jmsTemplate;
     }
 }

@@ -1,15 +1,21 @@
 package com.example.demo.models;
 
+import com.example.demo.models.listeners.ChangeLogEntityListener;
 import jakarta.persistence.*;
+import jakarta.xml.bind.annotation.XmlRootElement;
+
+import java.io.Serializable;
 
 
+@EntityListeners(ChangeLogEntityListener.class)
 @Entity
 @SuppressWarnings("unused")
 @Table(name = "book")
-public class Book {
+@XmlRootElement()
+public class Book implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
     private String title;
@@ -18,10 +24,10 @@ public class Book {
 
     private String genre;
 
-
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
+
 
     public Book() {
 

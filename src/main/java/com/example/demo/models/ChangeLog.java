@@ -1,21 +1,41 @@
 package com.example.demo.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
+
+@JsonSerialize
 @Entity
 @Table(name = "change_log")
-public class ChangeLog {
+public class ChangeLog implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String changeType;
+
     private String entityClass;
+
     private Long entityId;
-    @Column(columnDefinition = "TEXT")
+
     private String changeDetails;
+
     private LocalDateTime changeTimestamp = LocalDateTime.now();
+
+    public ChangeLog(String changeType, String entityClass, Long entityId, String changeDetails) {
+        this.changeType = changeType;
+        this.entityClass = entityClass;
+        this.entityId = entityId;
+        this.changeDetails = changeDetails;
+    }
+
+    public ChangeLog() {
+
+    }
 
     // Getters and Setters
     public Long getId() {

@@ -4,6 +4,7 @@ import com.example.demo.models.Author;
 import com.example.demo.models.repositories.AuthorRepository;
 import com.example.demo.models.Book;
 import com.example.demo.models.repositories.BookRepository;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class AuthorService {
     private final BookRepository bookRepository;
 
 
-    public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository) {
+    public AuthorService(AuthorRepository authorRepository, BookRepository bookRepository, JmsMessagingTemplate jmsTemplate) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
     }
@@ -45,5 +46,4 @@ public class AuthorService {
     public List<Book> findBooksByAuthor_Id(Long authorId) {
         return bookRepository.findByAuthor_Id(authorId);
     }
-
 }

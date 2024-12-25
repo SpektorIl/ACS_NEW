@@ -1,14 +1,18 @@
 package com.example.demo.models;
 
+import com.example.demo.models.listeners.ChangeLogEntityListener;
 import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.io.Serializable;
 
+
+@EntityListeners(ChangeLogEntityListener.class)
 @Entity
 @SuppressWarnings("unused")
 @Table(name = "author")
 @XmlRootElement()
-public class Author {
+public class Author implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
