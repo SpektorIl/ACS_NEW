@@ -18,3 +18,6 @@ INSERT INTO public.book (title, publication_date, genre, author_id) VALUES
                                                                      ('The Brothers Karamazov', '1880-01-01', 'Philosophical Fiction', 4),
                                                                      ('The Old Man and The Sea', '1952-09-01', 'Literary Fiction', 3),
                                                                      ('Love in the Time of Cholera', '1985-01-01', 'Romance', 5);
+
+INSERT INTO public.notification_conditions (id, attribute_condition, email, entity_name) VALUES
+                                                                                             ('1'::bigint, 'Chekhov'::character varying, 'ilyaspektor@mail.ru'::character varying, 'Author'::character varying);

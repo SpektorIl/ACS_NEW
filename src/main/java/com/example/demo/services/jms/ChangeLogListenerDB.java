@@ -11,21 +11,16 @@ import org.springframework.stereotype.Service;
  * при получении десериализует его и делает запись в бд
  */
 @Service
-public class ChangeLogListener {
+public class ChangeLogListenerDB {
 
     private final ChangeLogRepository changeLogRepository;
 
-    public ChangeLogListener(ChangeLogRepository changeLogRepository) {
+    public ChangeLogListenerDB(ChangeLogRepository changeLogRepository) {
         this.changeLogRepository = changeLogRepository;
     }
 
     @JmsListener(destination = "jms/ChangeLogQueue")
     public void handleMessage(ChangeLog message) {
-        ChangeLog changeLog = new ChangeLog();
-        changeLog.setChangeType(message.getChangeType());
-        changeLog.setEntityClass(message.getEntityClass());
-        changeLog.setEntityId(message.getEntityId());
-        changeLog.setChangeDetails(message.getChangeDetails());
-        changeLogRepository.save(changeLog);
+        changeLogRepository.save(message);
     }
 }

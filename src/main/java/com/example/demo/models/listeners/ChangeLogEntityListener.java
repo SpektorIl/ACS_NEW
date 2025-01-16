@@ -2,10 +2,16 @@ package com.example.demo.models.listeners;
 
 
 import com.example.demo.models.ChangeLog;
+import com.example.demo.models.NotificationCondition;
+import com.example.demo.services.EmailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 
 import jakarta.persistence.*;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -23,7 +29,7 @@ public class ChangeLogEntityListener {
 
     @PostPersist
     public void afterCreate(Object entity) {
-        sendChangeLog("CREATE", entity);
+            sendChangeLog("CREATE", entity);
     }
 
     @PostUpdate

@@ -3,24 +3,20 @@ package com.example.demo.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-public class JmsSender  {
-}
-
-@Component
-public class EmailServiceImpl implements EmailService {
-
+@Service
+public class EmailService {
     @Autowired
     private JavaMailSender emailSender;
 
-    public void sendSimpleMessage(
+    public void sendEmail(
             String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("ilyaspektor30031411@gmail.com");
-        message.setTo("ilyaspektor@mail.ru");
+        message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
         emailSender.send(message);
     }
+
 }
