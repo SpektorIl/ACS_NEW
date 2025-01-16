@@ -18,6 +18,10 @@ INSERT INTO public.book (title, publication_date, genre, author_id) VALUES
                                                                      ('The Brothers Karamazov', '1880-01-01', 'Philosophical Fiction', 4),
                                                                      ('The Old Man and The Sea', '1952-09-01', 'Literary Fiction', 3),
                                                                      ('Love in the Time of Cholera', '1985-01-01', 'Romance', 5);
-
+--Insert Conditions
 INSERT INTO public.notification_conditions (id, attribute_condition, email, entity_name) VALUES
-                                                                                             ('1'::bigint, 'Chekhov'::character varying, 'ilyaspektor@mail.ru'::character varying, 'Author'::character varying);
+                                                                                             ('1'::bigint, 'name contains Chekhov'::character varying, 'ilyaspektor@mail.ru'::character varying, 'Author'::character varying),
+                                                                                             ('2'::bigint, 'name contains Pushkin'::character varying, 'ilyaspektor@mail.ru'::character varying, 'Author'::character varying),
+                                                                                             ('3'::bigint, 'name contains Pynchon'::character varying, 'ilyaspektor@mail.ru'::character varying, 'Author'::character varying),
+                                                                                             ('4'::bigint, 'title contains Golden Key'::character varying, 'ilyaspektor@mail.ru'::character varying, 'Book'::character varying),
+                                                                                             ('5'::bigint, 'title contains Inherent Vice'::character varying, 'ilyaspektor@mail.ru'::character varying, 'Book'::character varying);                                                                                                                                 ;

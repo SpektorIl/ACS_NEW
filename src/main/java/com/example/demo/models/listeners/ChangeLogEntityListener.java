@@ -45,7 +45,8 @@ public class ChangeLogEntityListener {
     private void sendChangeLog(String changeType, Object entity) {
         ChangeLog message = new ChangeLog(changeType, entity.getClass().getSimpleName(),
                 getEntityId(entity), entity.toString());
-        jmsTemplate.convertAndSend("jms/ChangeLogQueue", message);
+        jmsTemplate.convertAndSend("jms/ChangeLogQueueDB", message);
+        jmsTemplate.convertAndSend("jms/ChangeLogQueueMail", message);
     }
 
     private Long getEntityId(Object entity) {

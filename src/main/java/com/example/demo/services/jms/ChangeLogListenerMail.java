@@ -1,6 +1,7 @@
 package com.example.demo.services.jms;
 
 import com.example.demo.models.Author;
+import com.example.demo.models.Book;
 import com.example.demo.models.ChangeLog;
 import com.example.demo.models.NotificationCondition;
 import com.example.demo.models.repositories.AuthorRepository;
@@ -33,7 +34,7 @@ public class ChangeLogListenerMail {
         this.bookRepo = bookRepo;
     }
 
-    @JmsListener(destination = "jms/ChangeLogQueue")
+    @JmsListener(destination = "jms/ChangeLogQueueMail")
     public void onChange(ChangeLog message) {
         // Получаем имя сущности и отправляем уведомление
         String entityName = message.getEntityClass();
@@ -60,10 +61,10 @@ public class ChangeLogListenerMail {
 
             if(Objects.equals(entityName, "Book"))
             {
-                if (authorRepo.findById(message.getEntityId()).isPresent()){
-                    Author author;
-                    author = authorRepo.findById(message.getEntityId()).get();
-                    if(condition.getAttributeCondition().contains(author.getName())) {
+                if (bookRepo.findById(message.getEntityId()).isPresent()){
+                    Book book;
+                    book = bookRepo.findById(message.getEntityId()).get();
+                    if(condition.getAttributeCondition().contains(book.getTitle())) {
                         emailService.sendEmail(
                                 condition.getEmail(),
                                 "Entity Updated: " + entityName,

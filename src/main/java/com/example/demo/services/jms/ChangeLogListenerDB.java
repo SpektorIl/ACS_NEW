@@ -19,7 +19,7 @@ public class ChangeLogListenerDB {
         this.changeLogRepository = changeLogRepository;
     }
 
-    @JmsListener(destination = "jms/ChangeLogQueue")
+    @JmsListener(destination = "jms/ChangeLogQueueDB")
     public void handleMessage(ChangeLog message) {
         changeLogRepository.save(message);
     }
